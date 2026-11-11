@@ -1,0 +1,96 @@
+{% extends "layout.html" %}
+{% block title %}CRM Dashboard{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold">Sales & CRM Dashboard</h2>
+    <a href="{{ url_for('export_customers') }}" class="btn btn-success">📥 Export Customers (CSV)</a>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card p-3 stat-box">
+            <span class="text-muted fw-semibold">Total Customers</span>
+            <h2 class="fw-bold text-primary mt-2">{{ total_customers }}</h2>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3 stat-box">
+            <span class="text-muted fw-semibold">Active Leads</span>
+            <h2 class="fw-bold text-warning mt-2">{{ total_leads }}</h2>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3 stat-box">
+            <span class="text-muted fw-semibold">Total Interactions Logged</span>
+            <h2 class="fw-bold text-info mt-2">{{ total_interactions }}</h2>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-7">
+        <div class="card p-4">
+            <h5 class="fw-bold mb-3">Sales Pipeline Status</h5>
+            <div style="max-height: 280px;">
+                <canvas id="pipelineChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-5">
+        <div class="card p-4">
+            <h5 class="fw-bold mb-3">Recent Interactions Feed</h5>
+            <ul class="list-group list-group-flush">
+                {% for act in recent_interactions %}
+                <li class="list-group-item px-0">
+                    <div class="d-flex justify-content-between">
+                        <span class="fw-semibold text-primary">[{{ act['interaction_type'] }}] {{ act['customer_name'] }}</span>
+                        <small class="text-muted">{{ act['date'] }}</small>
+                    </div>
+                    <p class="small text-muted mb-0">{{ act['description'] }}</p>
+                </li>
+                {% else %}
+                <li class="list-group-item px-0 text-muted">No recent interactions logged.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div id="chart-metrics"
+     data-new="{{ status_counts['New'] }}"
+     data-contacted="{{ status_counts['Contacted'] }}"
+     data-qualified="{{ status_counts['Qualified'] }}"
+     data-won="{{ status_counts['Won'] }}"
+     data-lost="{{ status_counts['Lost'] }}">
+</div>
+
+<script>
+    const metrics = document.getElementById('chart-metrics');
+    const chartData = [
+        Number(metrics.dataset.new) || 0,
+        Number(metrics.dataset.contacted) || 0,
+        Number(metrics.dataset.qualified) || 0,
+        Number(metrics.dataset.won) || 0,
+        Number(metrics.dataset.lost) || 0
+    ];
+
+    const ctx = document.getElementById('pipelineChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['New', 'Contacted', 'Qualified', 'Won', 'Lost'],
+            datasets: [{
+                label: 'Leads',
+                data: chartData,
+                backgroundColor: ['#3b82f6', '#f59e0b', '#8b5cf6', '#10b981', '#ef4444'],
+                borderRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+        }
+    });
+</script>
+{% endblock %}

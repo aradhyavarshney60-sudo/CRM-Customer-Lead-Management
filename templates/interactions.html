@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+{% block title %}Interactions - CRM{% endblock %}
+{% block content %}
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card p-4">
+            <h5 class="fw-bold mb-3">Log Interaction</h5>
+            <form method="POST">
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Select Lead</label>
+                    <select name="lead_id" class="form-select" required>
+                        <option value="" disabled selected>Choose Lead...</option>
+                        {% for l in leads %}
+                        <option value="{{ l['id'] }}">#{{ l['id'] }} - {{ l['name'] }} ({{ l['status'] }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Type</label>
+                    <select name="interaction_type" class="form-select" required>
+                        <option value="Call">📞 Call</option>
+                        <option value="Email">✉️ Email</option>
+                        <option value="Meeting">🤝 Meeting</option>
+                        <option value="Note">📝 Note</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Summary / Notes</label>
+                    <textarea name="description" class="form-control" rows="3" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 py-2">Log Interaction</button>
+            </form>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card p-3">
+            <h5 class="fw-bold mb-3">Interaction History</h5>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Customer</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in interactions %}
+                        <tr>
+                            <td>{{ i['id'] }}</td>
+                            <td class="fw-semibold">{{ i['customer_name'] }}</td>
+                            <td><span class="badge bg-dark">{{ i['interaction_type'] }}</span></td>
+                            <td class="small">{{ i['description'] }}</td>
+                            <td class="text-muted small">{{ i['date'] }}</td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="5" class="text-center py-3 text-muted">No interactions logged yet.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

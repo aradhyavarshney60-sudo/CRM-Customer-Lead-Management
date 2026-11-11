@@ -1,0 +1,15 @@
+body {
+    background-color: #f1f5f9;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #0f172a;
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+}
+
+.stat-box {
+    border-left: 4px solid #3b82f6;
+}

@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+{% block title %}Leads - CRM{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="fw-bold">Leads Management</h3>
+    <a href="{{ url_for('add_lead') }}" class="btn btn-primary">+ Add New Lead</a>
+</div>
+
+<div class="mb-3 d-flex gap-2">
+    <a href="{{ url_for('leads') }}" class="btn btn-sm btn-outline-dark {% if not selected_status %}active{% endif %}">All</a>
+    <a href="{{ url_for('leads', status='New') }}" class="btn btn-sm btn-outline-primary {% if selected_status == 'New' %}active{% endif %}">New</a>
+    <a href="{{ url_for('leads', status='Contacted') }}" class="btn btn-sm btn-outline-warning {% if selected_status == 'Contacted' %}active{% endif %}">Contacted</a>
+    <a href="{{ url_for('leads', status='Qualified') }}" class="btn btn-sm btn-outline-secondary {% if selected_status == 'Qualified' %}active{% endif %}">Qualified</a>
+    <a href="{{ url_for('leads', status='Won') }}" class="btn btn-sm btn-outline-success {% if selected_status == 'Won' %}active{% endif %}">Won</a>
+    <a href="{{ url_for('leads', status='Lost') }}" class="btn btn-sm btn-outline-danger {% if selected_status == 'Lost' %}active{% endif %}">Lost</a>
+</div>
+
+<div class="card p-3">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>Customer</th>
+                    <th>Company</th>
+                    <th>Status</th>
+                    <th>Assigned Rep</th>
+                    <th>Notes</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for l in leads %}
+                <tr>
+                    <td>{{ l['id'] }}</td>
+                    <td class="fw-semibold">{{ l['customer_name'] }}</td>
+                    <td>{{ l['customer_company'] or '-' }}</td>
+                    <td><span class="badge bg-secondary">{{ l['status'] }}</span></td>
+                    <td>{{ l['rep_name'] or 'Unassigned' }}</td>
+                    <td class="small text-muted">{{ l['notes'] }}</td>
+                    <td>
+                        <a href="{{ url_for('edit_lead', id=l['id']) }}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                        <a href="{{ url_for('delete_lead', id=l['id']) }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete lead?')">Delete</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="7" class="text-center py-3 text-muted">No leads found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

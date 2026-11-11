@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+{% block title %}{{ action }} Lead{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card p-4">
+            <h4 class="fw-bold mb-3">{{ action }} Lead</h4>
+            <form method="POST">
+                {% if action == 'Add' %}
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Select Customer</label>
+                    <select name="customer_id" class="form-select" required>
+                        <option value="" disabled selected>Choose Customer...</option>
+                        {% for c in customers %}
+                        <option value="{{ c['id'] }}">{{ c['name'] }} ({{ c['company'] }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endif %}
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Lead Status</label>
+                    <select name="status" class="form-select" required>
+                        <option value="New" {% if lead and lead['status'] == 'New' %}selected{% endif %}>New</option>
+                        <option value="Contacted" {% if lead and lead['status'] == 'Contacted' %}selected{% endif %}>Contacted</option>
+                        <option value="Qualified" {% if lead and lead['status'] == 'Qualified' %}selected{% endif %}>Qualified</option>
+                        <option value="Won" {% if lead and lead['status'] == 'Won' %}selected{% endif %}>Won</option>
+                        <option value="Lost" {% if lead and lead['status'] == 'Lost' %}selected{% endif %}>Lost</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Notes</label>
+                    <textarea name="notes" class="form-control" rows="3">{{ lead['notes'] if lead else '' }}</textarea>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 py-2">{{ action }} Lead</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
